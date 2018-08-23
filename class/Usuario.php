@@ -93,7 +93,7 @@ class Usuario{
 		);
 	}
 	/**
-	 * Metodo de autenticação de usuaios
+	 * Metodo de autenticação de usuarios
 	 */
 	public function login($login, $password){
 		$sql = new Sql();
@@ -114,6 +114,13 @@ class Usuario{
 			// Gerando exceção para falha de autenticação
 			throw new Exception("Login e/ou Senha inválidos.");
 		}
+	}
+	/**
+	 * Insert
+	 */
+	public function insert(){
+		$sql = new Sql();
+		$results = $sql->select();
 	}
 }
 
