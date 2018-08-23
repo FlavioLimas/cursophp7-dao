@@ -61,7 +61,7 @@ class Usuario{
 			$this->setDtCadastro(new DateTime($row['dtcadastro']));
 		}
 	}
-	/**
+	/**Quem estanciar a classe Usuario poderá imprimir usando um echo devido a esse metodo
 	 * Imprimindo dados dos atributos
 	 */
 	public function __toString(){
@@ -73,6 +73,47 @@ class Usuario{
 				"dtcadatro"=>$this->getDtCadastro()->format("d/m/Y H:i:s")
 			)
 		);
+	}
+	/**
+	 * Lista Usuarios
+	 Se vc não esta usando o $this no metodo compensa que ele seja static, pois assim vc não precisa estanciar para utiliza-lo
+	 */
+	public static function getLista(){
+		$sql = new Sql();
+		return $sql->select("SELECT * FROM tb_usuarios ORDER BY deslogin");
+	}
+	/**
+	 * Metodo de pesquisa no banco de dados
+	 */
+	public static function search($login){
+		$sql = new Sql();
+		return $sql->select("SELECT * FROM tb_usuarios WHERE deslogin LIKE :SEARCH ORDER BY deslogin", array(
+			':SEARCH'=>"%".$login."%"
+			)
+		);
+	}
+	/**
+	 * Metodo de autenticação de usuaios
+	 */
+	public function login($login, $password){
+		$sql = new Sql();
+
+		$results = $sql->select("SELECT * FROM tb_usuarios WHERE deslogin = :LOGIN AND dessenha = :PASSWORD", array(
+				":LOGIN"=>$login,
+				":PASSWORD"=>$password
+			)
+		);
+		if(count($results) > 0){
+			$row = $results[0];
+
+			$this->setIdUsuario($row['idusuario']);
+			$this->setDesLogin($row['deslogin']);
+			$this->setDesSenha($row['dessenha']);
+			$this->setDtCadastro(new DateTime($row['dtcadastro']));
+		}else{
+			// Gerando exceção para falha de autenticação
+			throw new Exception("Login e/ou Senha inválidos.");
+		}
 	}
 }
 
