@@ -48,7 +48,7 @@ class Usuario{
 		 * A classe PDO sempre vai te retornar um array mesmo se o retorno conter somente uma linha
 		 */
 		$results = $sql->select("SELECT * FROM tb_usuarios WHERE idusuario = :ID", array(
-				":ID"=>$id;
+				":ID"=>$id
 		));
 		// Verificando se existe pelo menos um registro
 		// if(isset($results[0])){
@@ -60,19 +60,19 @@ class Usuario{
 			$this->setDesSenha($row['dessenha']);
 			$this->setDtCadastro(new DateTime($row['dtcadastro']));
 		}
-		/**
-		 * Imprimindo dados dos atributos
-		 */
-		public function __toString(){
-			return echo json_encode(
-				array(
-					"idusuario"=>$this->getIdUsuario(),
-					"deslogin"=>$this->getDesLogin(),
-					"dessenha"=>$this->getDesSenha(),
-					"dtcadatro"=>$this->getDtCadastro()->format("d/m/Y H:i:s")
-				));
-		}
-
+	}
+	/**
+	 * Imprimindo dados dos atributos
+	 */
+	public function __toString(){
+		return json_encode(
+			array(
+				"idusuario"=>$this->getIdUsuario(),
+				"deslogin"=>$this->getDesLogin(),
+				"dessenha"=>$this->getDesSenha(),
+				"dtcadatro"=>$this->getDtCadastro()->format("d/m/Y H:i:s")
+			)
+		);
 	}
 }
 
