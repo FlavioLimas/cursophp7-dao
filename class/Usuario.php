@@ -53,12 +53,13 @@ class Usuario{
 		// Verificando se existe pelo menos um registro
 		// if(isset($results[0])){
 		if(count($results) > 0){
-			$row = $results[0];
+			// $row = $results[0];
 			// setando os dados
-			$this->setIdUsuario($row['idusuario']);
-			$this->setDesLogin($row['deslogin']);
-			$this->setDesSenha($row['dessenha']);
-			$this->setDtCadastro(new DateTime($row['dtcadastro']));
+			// $this->setIdUsuario($row['idusuario']);
+			// $this->setDesLogin($row['deslogin']);
+			// $this->setDesSenha($row['dessenha']);
+			// $this->setDtCadastro(new DateTime($row['dtcadastro']));
+			$this->setData($results[0]);
 		}
 	}
 	/**Quem estanciar a classe Usuario poderá imprimir usando um echo devido a esse metodo
@@ -104,23 +105,38 @@ class Usuario{
 			)
 		);
 		if(count($results) > 0){
-			$row = $results[0];
-
-			$this->setIdUsuario($row['idusuario']);
-			$this->setDesLogin($row['deslogin']);
-			$this->setDesSenha($row['dessenha']);
-			$this->setDtCadastro(new DateTime($row['dtcadastro']));
+			// Chamada do metodo que atribui os valores nos atributos
+			$this->setData($results[0]);
 		}else{
 			// Gerando exceção para falha de autenticação
 			throw new Exception("Login e/ou Senha inválidos.");
 		}
 	}
 	/**
+	 * Setando os valores nos atributos
+	 */
+	public function setData($data){
+		$this->setIdUsuario($data['idusuario']);
+		$this->setDesLogin($data['deslogin']);
+		$this->setDesSenha($data['dessenha']);
+		$this->setDtCadastro(new DateTime($data['dtcadastro']));
+	}
+	/**
 	 * Insert
 	 */
 	public function insert(){
 		$sql = new Sql();
-		$results = $sql->select();
+		/**
+		 * Chamada criação de procedure no MySql
+		 */
+		$results = $sql->select("CALL sp_usuarios_insert(:LOGIN,:SENHA)",array(
+				':LOGIN'=>$this->getLogin(),
+				':PASSWORD'=>$this->getSenha()
+			)
+		);
+		if(count($results) > 0){
+			$this->setData($results[0]);
+		}
 	}
 }
 
