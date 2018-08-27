@@ -129,14 +129,39 @@ class Usuario{
 		/**
 		 * Chamada criação de procedure no MySql
 		 */
-		$results = $sql->select("CALL sp_usuarios_insert(:LOGIN,:SENHA)",array(
-				':LOGIN'=>$this->getLogin(),
-				':PASSWORD'=>$this->getSenha()
+		$results = $sql->select("CALL sp_usuarios_insert(:LOGIN,:PASSWORD)",array(
+				':LOGIN'=>$this->getDesLogin(),
+				':PASSWORD'=>$this->getDesSenha()
 			)
 		);
 		if(count($results) > 0){
 			$this->setData($results[0]);
 		}
+	}
+	/**
+	 * Setando os atributos login e senha na construção da Classe Usuarios, se não for informado não vai dar erro, alimenta (registro no banco um novo usuario com login e senha vazios) o login e senha com vazio
+	 */
+	public function __construct($login = "",$password = ""){
+		$this->setDesLogin($login);
+		$this->setDesSenha($password);
+	}
+	/**
+	 * Update
+	 */
+	public function update($login,$password){
+		/**
+		 * Setando atirbutos com valor passado como parametro
+		 */
+		$this->setDesLogin($login);
+		$this->setDesSenha($password);
+		$sql = new Sql();
+
+		$sql->query("UPDATE tb_usuarios SET deslogin = :LOGIN, dessenha = :PASSWORD WHERE idusuario = :ID", array(
+				':LOGIN'=>$this->getDesLogin(),
+				':PASSWORD'=>$this->getDesSenha(),
+				':ID'=>$this->getIdUsuario()
+			)
+		);
 	}
 }
 
